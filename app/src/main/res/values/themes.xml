@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.LAB_WEEK_05" parent="Base.Theme.LAB_WEEK_05" />
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!--
+            For example:
+            <item name="colorPrimary">@color/my_light_primary</item>
+            <item name="colorPrimaryVariant">@color/my_light_primary_variant</item>
+            <item name="colorOnPrimary">@color/white</item>
+        -->
+    </style>
 </resources>
