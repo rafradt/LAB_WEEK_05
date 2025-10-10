@@ -3,7 +3,9 @@ package com.example.lab_week_05
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide // 1. Import Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.api_response)
     }
 
+    private val imageResultView: ImageView by lazy {
+        findViewById(R.id.image_result)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,23 +44,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getCatImageResponse() {
-        val call = catApiService.searchImages(1, "full")
+        val call: Call<List<ImageData>> = catApiService.searchImages(1, "full")
         call.enqueue(object : Callback<List<ImageData>> {
             override fun onFailure(call: Call<List<ImageData>>, t: Throwable) {
                 Log.e(MAIN_ACTIVITY, "Failed to get response", t)
             }
 
             override fun onResponse(
-                call: Call<List<ImageData>>,
-                response: Response<List<ImageData>>
+                call: Call<List<ImageData>>, response:
+                Response<List<ImageData>>
             ) {
                 if (response.isSuccessful) {
-                    val image = response.body()
-                    val firstImage = image?.firstOrNull()?.imageUrl ?: "No URL"
-                    apiResponseView.text = getString(
-                        R.string.image_placeholder,
-                        firstImage
-                    )
+                    val images = response.body()
+                    val firstImage = images?.firstOrNull()
+                    if (firstImage != null && firstImage.imageUrl.isNotBlank()) {
+                        // 2. Use Glide to load the image
+                        Glide.with(this@MainActivity)
+                            .load(firstImage.imageUrl)
+                            .into(imageResultView)
+
+                        apiResponseView.text = getString(
+                            R.string.image_placeholder,
+                            firstImage.imageUrl
+                        )
+                    } else {
+                        Log.d(MAIN_ACTIVITY, "Missing image URL or image data")
+                        apiResponseView.text = "No image found"
+                    }
                 } else {
                     Log.e(
                         MAIN_ACTIVITY, "Failed to get response\n" +

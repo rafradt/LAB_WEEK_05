@@ -11,3 +11,4 @@ interface CatApiService {
         @Query("size") size: String
     ): Call<List<ImageData>>
 }
+    
